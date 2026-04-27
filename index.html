@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanças do Casal</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial;
+  background:#F4EFE6;
+  color:#3F4A2D;
+}
+.container {
+  display:flex;
+  height:100vh;
+}
+.left {
+  flex:1;
+  background:url('casal-login.jpg') center/cover;
+}
+.right {
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.card {
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  width:300px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+button {
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#D4AF37;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container" id="login">
+  <div class="left"></div>
+  <div class="right">
+    <div class="card">
+      <h2>Login</h2>
+
+```
+  <select id="user">
+    <option>Luã</option>
+    <option>Mayara</option>
+  </select>
+
+  <br><br>
+
+  <input type="password" id="senha" placeholder="Senha">
+
+  <br><br>
+
+  <button onclick="login()">Entrar</button>
+</div>
+```
+
+  </div>
+</div>
+
+<div id="app" style="display:none;padding:20px;">
+  <h1>Bem-vindo ao App 💰</h1>
+
+  <input id="desc" placeholder="Descrição">
+  <input id="valor" placeholder="Valor">
+
+<button onclick="salvar()">Salvar gasto</button>
+
+  <ul id="lista"></ul>
+</div>
+
+<script>
+const supabase = window.supabase.createClient(
+'https://pmgkatswiqmvecdovysx.supabase.co',
+'sb_publishable_hy0h_dWAzVJQ9vjMA0mhPA_4Wr1_pDB'
+)
+
+let usuario = ""
+
+async function login(){
+  const nome = document.getElementById('user').value
+  const senha = document.getElementById('senha').value
+
+  const { data } = await supabase
+    .from('usuarios')
+    .select('*')
+    .eq('nome', nome)
+    .eq('senha', senha)
+
+  if(data.length){
+    usuario = nome
+    document.getElementById('login').style.display='none'
+    document.getElementById('app').style.display='block'
+    carregar()
+  } else {
+    alert('Senha errada')
+  }
+}
+
+async function salvar(){
+  const desc = document.getElementById('desc').value
+  const valor = document.getElementById('valor').value
+
+  await supabase.from('gastos').insert({
+    usuario: usuario,
+    descricao: desc,
+    categoria: 'Outros',
+    tipo:'Avulso',
+    valor: valor,
+    data: new Date()
+  })
+
+  carregar()
+}
+
+async function carregar(){
+  const { data } = await supabase.from('gastos').select('*')
+
+  const lista = document.getElementById('lista')
+  lista.innerHTML = ""
+
+  data.forEach(g=>{
+    lista.innerHTML += `<li>${g.descricao} - R$ ${g.valor}</li>`
+  })
+}
+</script>
+
+</body>
+</html>
