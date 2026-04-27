@@ -1,147 +1,1043 @@
 <!DOCTYPE html>
-
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finanças do Casal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finanças do Casal</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
-body {
-  margin:0;
-  font-family: Arial;
-  background:#F4EFE6;
-  color:#3F4A2D;
-}
-.container {
-  display:flex;
-  height:100vh;
-}
-.left {
-  flex:1;
-  background:url('casal-login.jpg') center/cover;
-}
-.right {
-  flex:1;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-.card {
-  background:white;
-  padding:30px;
-  border-radius:20px;
-  width:300px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-button {
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#D4AF37;
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-</style>
+  <style>
+    :root {
+      --verde: #3f4a2d;
+      --verde2: #5a633b;
+      --dourado: #d4af37;
+      --dourado2: #b88918;
+      --bege: #f4efe6;
+      --branco: #fffdf8;
+      --texto: #3f4a2d;
+      --marrom: #7b6a46;
+      --erro: #b42318;
+    }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bege);
+      color: var(--texto);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      background: var(--bege);
+    }
+
+    .login-photo {
+      position: relative;
+      background: linear-gradient(to top, rgba(63,74,45,.85), rgba(63,74,45,.15)), url("casal-login.jpg") center/cover no-repeat;
+      overflow: hidden;
+    }
+
+    .login-photo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 20%, rgba(212,175,55,.35), transparent 30%);
+    }
+
+    .login-title {
+      position: absolute;
+      top: 45px;
+      left: 45px;
+      right: 45px;
+      color: white;
+      z-index: 2;
+      animation: fadeDown .8s ease;
+    }
+
+    .login-title small {
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #f5df9d;
+      font-weight: bold;
+    }
+
+    .login-title h1 {
+      font-size: 56px;
+      line-height: 1.05;
+      margin: 12px 0 0;
+      max-width: 560px;
+    }
+
+    .login-features {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(63,74,45,.96);
+      padding: 28px;
+      border-radius: 42px 42px 0 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      color: white;
+      z-index: 3;
+    }
+
+    .feature {
+      text-align: center;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .feature b {
+      display: block;
+      color: #f5df9d;
+      margin-bottom: 5px;
+    }
+
+    .login-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 35px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(212,175,55,.28), transparent 30%),
+        radial-gradient(circle at 90% 90%, rgba(90,99,59,.22), transparent 34%);
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255,253,248,.94);
+      border: 1px solid rgba(212,175,55,.35);
+      border-radius: 34px;
+      padding: 34px;
+      box-shadow: 0 25px 70px rgba(63,74,45,.22);
+      position: relative;
+      z-index: 2;
+      animation: fadeUp .7s ease;
+    }
+
+    .heart {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      margin: 0 auto 16px;
+      background: #f9f3e5;
+      border: 1px solid rgba(212,175,55,.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      color: var(--dourado);
+    }
+
+    .login-card h2 {
+      text-align: center;
+      margin: 0;
+      font-size: 42px;
+      color: var(--marrom);
+    }
+
+    .login-card p {
+      text-align: center;
+      color: var(--marrom);
+      margin-bottom: 28px;
+    }
+
+    .user-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 12px 0 22px;
+    }
+
+    .user-btn {
+      border: 1px solid rgba(212,175,55,.35);
+      background: var(--branco);
+      border-radius: 22px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      color: var(--marrom);
+      transition: .25s;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .user-btn.active {
+      background: var(--verde2);
+      color: white;
+      border-color: var(--dourado);
+      box-shadow: 0 12px 30px rgba(63,74,45,.25);
+      transform: translateY(-2px);
+    }
+
+    .avatar {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      border: 2px solid var(--dourado);
+      background: var(--bege);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--verde);
+      font-size: 26px;
+    }
+
+    label {
+      font-weight: bold;
+      color: var(--verde);
+      display: block;
+      margin: 12px 0 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid rgba(212,175,55,.45);
+      border-radius: 14px;
+      background: white;
+      color: var(--verde);
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--dourado);
+      box-shadow: 0 0 0 3px rgba(212,175,55,.15);
+    }
+
+    .btn {
+      border: none;
+      border-radius: 15px;
+      padding: 14px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 15px;
+      background: var(--dourado);
+      color: white;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      background: var(--dourado2);
+      transform: translateY(-1px);
+    }
+
+    .btn-verde {
+      background: var(--verde2);
+    }
+
+    .btn-verde:hover {
+      background: var(--verde);
+    }
+
+    .btn-light {
+      background: white;
+      color: var(--verde);
+      border: 1px solid rgba(212,175,55,.4);
+    }
+
+    .btn-danger {
+      background: #fff1f0;
+      color: var(--erro);
+      border: 1px solid #ffccc7;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .login-submit {
+      width: 100%;
+      margin-top: 18px;
+      padding: 16px;
+      font-size: 17px;
+      border-radius: 18px;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    header {
+      background: rgba(255,253,248,.94);
+      border-bottom: 1px solid rgba(212,175,55,.25);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      max-width: 1250px;
+      margin: auto;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .header-inner h1 {
+      margin: 0;
+      color: var(--verde);
+    }
+
+    .header-inner span {
+      color: var(--marrom);
+      font-size: 14px;
+    }
+
+    .layout {
+      max-width: 1250px;
+      margin: auto;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 18px;
+    }
+
+    aside {
+      background: white;
+      border-radius: 24px;
+      padding: 14px;
+      border: 1px solid rgba(212,175,55,.18);
+      height: fit-content;
+      box-shadow: 0 8px 25px rgba(63,74,45,.08);
+    }
+
+    .user-box {
+      background: var(--bege);
+      border-radius: 16px;
+      padding: 14px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      margin-bottom: 8px;
+      text-align: left;
+      background: transparent;
+      color: var(--verde);
+      border: none;
+      padding: 13px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .nav-btn.active, .nav-btn:hover {
+      background: var(--verde2);
+      color: white;
+    }
+
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid rgba(212,175,55,.18);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 8px 25px rgba(63,74,45,.08);
+    }
+
+    .card small {
+      color: var(--marrom);
+    }
+
+    .card h3 {
+      margin: 8px 0 0;
+      font-size: 25px;
+      color: var(--verde);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+    }
+
+    th {
+      background: var(--bege);
+      color: var(--marrom);
+      text-align: left;
+      padding: 12px;
+      font-size: 13px;
+    }
+
+    td {
+      padding: 12px;
+      border-top: 1px solid rgba(212,175,55,.13);
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    .error {
+      background: #fff1f0;
+      color: var(--erro);
+      border: 1px solid #ffccc7;
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+
+    .success {
+      background: #f6ffed;
+      color: #237804;
+      border: 1px solid #b7eb8f;
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+
+    canvas {
+      max-height: 285px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 950px) {
+      .login-page {
+        grid-template-columns: 1fr;
+      }
+
+      .login-photo {
+        min-height: 260px;
+      }
+
+      .login-title h1 {
+        font-size: 34px;
+      }
+
+      .login-features {
+        display: none;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .login-card {
+        padding: 24px;
+      }
+
+      .login-card h2 {
+        font-size: 32px;
+      }
+
+      .user-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container" id="login">
-  <div class="left"></div>
-  <div class="right">
-    <div class="card">
-      <h2>Login</h2>
+  <section id="loginPage" class="login-page">
+    <div class="login-photo">
+      <div class="login-title">
+        <small>Finanças do Casal</small>
+        <h1>Planejamos juntos, realizamos juntos.</h1>
+      </div>
 
-```
-  <select id="user">
-    <option>Luã</option>
-    <option>Mayara</option>
-  </select>
+      <div class="login-features">
+        <div class="feature"><b>Gastos</b><span>Controle mensal</span></div>
+        <div class="feature"><b>Cartões</b><span>Faturas do casal</span></div>
+        <div class="feature"><b>Guardados</b><span>Reservas e metas</span></div>
+        <div class="feature"><b>Relatórios</b><span>Comparativos</span></div>
+      </div>
+    </div>
 
-  <br><br>
+    <div class="login-panel">
+      <div class="login-card">
+        <div class="heart">♡</div>
+        <h2>Bem-vindos!</h2>
+        <p>Escolha o usuário e informe a senha para continuar.</p>
 
-  <input type="password" id="senha" placeholder="Senha">
+        <label>Escolha o usuário</label>
+        <div class="user-grid">
+          <button class="user-btn active" id="btnLua" onclick="selecionarUsuario('Luã')">
+            <div class="avatar">L</div>
+            Luã
+          </button>
+          <button class="user-btn" id="btnMayara" onclick="selecionarUsuario('Mayara')">
+            <div class="avatar">M</div>
+            Mayara
+          </button>
+        </div>
 
-  <br><br>
+        <label>Senha</label>
+        <input id="senhaLogin" type="password" placeholder="Digite a senha" />
 
-  <button onclick="login()">Entrar</button>
-</div>
-```
+        <button class="btn login-submit" onclick="entrar()">Entrar</button>
 
-  </div>
-</div>
+        <p style="font-size:13px;margin-top:20px;">♡ Juntos somos mais fortes.</p>
+      </div>
+    </div>
+  </section>
 
-<div id="app" style="display:none;padding:20px;">
-  <h1>Bem-vindo ao App 💰</h1>
+  <section id="appPage" class="app hidden">
+    <header>
+      <div class="header-inner">
+        <div>
+          <h1>Finanças do Casal</h1>
+          <span>Controle compartilhado de gastos, cartões e valores guardados.</span>
+        </div>
 
-  <input id="desc" placeholder="Descrição">
-  <input id="valor" placeholder="Valor">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <input type="month" id="mesFiltro" />
+          <button class="btn btn-light" onclick="carregarTudo()">Atualizar</button>
+          <button class="btn btn-verde" onclick="sair()">Sair</button>
+        </div>
+      </div>
+    </header>
 
-<button onclick="salvar()">Salvar gasto</button>
+    <main class="layout">
+      <aside>
+        <div class="user-box">Usuário: <span id="usuarioAtual"></span></div>
+        <button class="nav-btn active" onclick="abrirAba('dashboard', this)">Dashboard</button>
+        <button class="nav-btn" onclick="abrirAba('gastos', this)">Gastos</button>
+        <button class="nav-btn" onclick="abrirAba('cartoes', this)">Cartões</button>
+        <button class="nav-btn" onclick="abrirAba('guardados', this)">Guardados</button>
+        <button class="nav-btn" onclick="abrirAba('relatorios', this)">Relatórios</button>
+      </aside>
 
-  <ul id="lista"></ul>
-</div>
+      <section class="content">
+        <div id="mensagem"></div>
+
+        <div id="dashboard" class="aba">
+          <div class="cards">
+            <div class="card"><small>Gastos do mês</small><h3 id="totalGastos">R$ 0,00</h3></div>
+            <div class="card"><small>Cartões do mês</small><h3 id="totalCartoes">R$ 0,00</h3></div>
+            <div class="card"><small>Total do mês</small><h3 id="totalMes">R$ 0,00</h3></div>
+            <div class="card"><small>Total guardado</small><h3 id="totalGuardado">R$ 0,00</h3></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <h2>Gastos por categoria</h2>
+              <canvas id="graficoCategoria"></canvas>
+            </div>
+            <div class="card">
+              <h2>Gastos individuais</h2>
+              <canvas id="graficoPessoa"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div id="gastos" class="aba hidden">
+          <div class="card">
+            <h2>Cadastrar gastos mensais e avulsos</h2>
+            <div class="form-grid">
+              <select id="gastoUsuario">
+                <option>Luã</option><option>Mayara</option><option>Casal</option>
+              </select>
+              <input id="gastoDescricao" placeholder="Descrição" />
+              <select id="gastoCategoria"></select>
+              <input id="gastoValor" type="number" step="0.01" placeholder="Valor" />
+              <input id="gastoData" type="date" />
+              <select id="gastoTipo">
+                <option>Mensal</option><option>Avulso</option>
+              </select>
+            </div>
+            <br />
+            <button class="btn" onclick="salvarGasto()">Adicionar gasto</button>
+          </div>
+
+          <div class="card table-wrap">
+            <h2>Lista de gastos</h2>
+            <table>
+              <thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Tipo</th><th>Valor</th><th>Ação</th></tr></thead>
+              <tbody id="listaGastos"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="cartoes" class="aba hidden">
+          <div class="card">
+            <h2>Cadastrar gastos de cartão</h2>
+            <div class="form-grid">
+              <select id="cartaoUsuario">
+                <option>Luã</option><option>Mayara</option><option>Casal</option>
+              </select>
+              <input id="cartaoNome" placeholder="Nome do cartão" />
+              <input id="cartaoDescricao" placeholder="Descrição" />
+              <select id="cartaoCategoria"></select>
+              <input id="cartaoValor" type="number" step="0.01" placeholder="Valor" />
+              <input id="cartaoData" type="date" />
+            </div>
+            <br />
+            <button class="btn" onclick="salvarCartao()">Adicionar cartão</button>
+          </div>
+
+          <div class="card table-wrap">
+            <h2>Lista de cartões</h2>
+            <table>
+              <thead><tr><th>Data</th><th>Usuário</th><th>Cartão</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th>Ação</th></tr></thead>
+              <tbody id="listaCartoes"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="guardados" class="aba hidden">
+          <div class="card">
+            <h2>Cadastrar valores guardados</h2>
+            <div class="form-grid">
+              <select id="guardadoUsuario">
+                <option>Casal</option><option>Luã</option><option>Mayara</option>
+              </select>
+              <input id="guardadoConta" placeholder="Conta / Meta" />
+              <input id="guardadoValor" type="number" step="0.01" placeholder="Valor" />
+              <input id="guardadoData" type="date" />
+              <input id="guardadoObs" placeholder="Observação" />
+            </div>
+            <br />
+            <button class="btn" onclick="salvarGuardado()">Adicionar valor</button>
+          </div>
+
+          <div class="card table-wrap">
+            <h2>Valores guardados</h2>
+            <table>
+              <thead><tr><th>Data</th><th>Usuário</th><th>Conta/Meta</th><th>Observação</th><th>Valor</th><th>Ação</th></tr></thead>
+              <tbody id="listaGuardados"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="relatorios" class="aba hidden">
+          <div class="card">
+            <h2>Comparativo mensal</h2>
+            <canvas id="graficoMensal"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
 
 <script>
-const supabase = window.supabase.createClient(
-'https://pmgkatswiqmvecdovysx.supabase.co',
-'sb_publishable_hy0h_dWAzVJQ9vjMA0mhPA_4Wr1_pDB'
-)
+  const SUPABASE_URL = "https://pmgkatswiqmvecdovysx.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_hy0h_dWAzVJQ9vjMA0mhPA_4Wr1_pDB";
+  const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let usuario = ""
+  let usuarioSelecionado = "Luã";
+  let usuarioLogado = "";
+  let gastos = [];
+  let cartoes = [];
+  let guardados = [];
+  let chartCategoria = null;
+  let chartPessoa = null;
+  let chartMensal = null;
 
-async function login(){
-  const nome = document.getElementById('user').value
-  const senha = document.getElementById('senha').value
+  const categorias = ["Moradia", "Mercado", "Transporte", "Saúde", "Lazer", "Educação", "Restaurante", "Assinaturas", "Compras", "Outros"];
 
-  const { data } = await supabase
-    .from('usuarios')
-    .select('*')
-    .eq('nome', nome)
-    .eq('senha', senha)
-
-  if(data.length){
-    usuario = nome
-    document.getElementById('login').style.display='none'
-    document.getElementById('app').style.display='block'
-    carregar()
-  } else {
-    alert('Senha errada')
+  function hoje() {
+    return new Date().toISOString().slice(0,10);
   }
-}
 
-async function salvar(){
-  const desc = document.getElementById('desc').value
-  const valor = document.getElementById('valor').value
+  function mesAtual() {
+    return new Date().toISOString().slice(0,7);
+  }
 
-  await supabase.from('gastos').insert({
-    usuario: usuario,
-    descricao: desc,
-    categoria: 'Outros',
-    tipo:'Avulso',
-    valor: valor,
-    data: new Date()
-  })
+  function moeda(v) {
+    return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
 
-  carregar()
-}
+  function mensagem(texto, tipo = "success") {
+    document.getElementById("mensagem").innerHTML = `<div class="${tipo}">${texto}</div>`;
+    setTimeout(() => document.getElementById("mensagem").innerHTML = "", 3500);
+  }
 
-async function carregar(){
-  const { data } = await supabase.from('gastos').select('*')
+  function selecionarUsuario(nome) {
+    usuarioSelecionado = nome;
+    document.getElementById("btnLua").classList.toggle("active", nome === "Luã");
+    document.getElementById("btnMayara").classList.toggle("active", nome === "Mayara");
+  }
 
-  const lista = document.getElementById('lista')
-  lista.innerHTML = ""
+  async function entrar() {
+    const senha = document.getElementById("senhaLogin").value;
 
-  data.forEach(g=>{
-    lista.innerHTML += `<li>${g.descricao} - R$ ${g.valor}</li>`
-  })
-}
+    const { data, error } = await db
+      .from("usuarios")
+      .select("*")
+      .eq("nome", usuarioSelecionado)
+      .eq("senha", senha)
+      .maybeSingle();
+
+    if (error || !data) {
+      alert("Usuário ou senha inválidos.");
+      return;
+    }
+
+    usuarioLogado = usuarioSelecionado;
+    localStorage.setItem("usuario_financas_casal", usuarioLogado);
+
+    document.getElementById("loginPage").classList.add("hidden");
+    document.getElementById("appPage").classList.remove("hidden");
+    document.getElementById("usuarioAtual").innerText = usuarioLogado;
+
+    document.getElementById("gastoUsuario").value = usuarioLogado;
+    document.getElementById("cartaoUsuario").value = usuarioLogado;
+
+    await carregarTudo();
+  }
+
+  function sair() {
+    localStorage.removeItem("usuario_financas_casal");
+    location.reload();
+  }
+
+  function abrirAba(id, botao) {
+    document.querySelectorAll(".aba").forEach(a => a.classList.add("hidden"));
+    document.getElementById(id).classList.remove("hidden");
+
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    botao.classList.add("active");
+
+    if (id === "relatorios") desenharGraficoMensal();
+  }
+
+  async function carregarTudo() {
+    const [gastosRes, cartoesRes, guardadosRes] = await Promise.all([
+      db.from("gastos").select("*").order("data", { ascending: false }),
+      db.from("cartoes").select("*").order("data", { ascending: false }),
+      db.from("guardados").select("*").order("data", { ascending: false })
+    ]);
+
+    if (gastosRes.error || cartoesRes.error || guardadosRes.error) {
+      mensagem("Erro ao carregar dados. Verifique Supabase e policies.", "error");
+      return;
+    }
+
+    gastos = gastosRes.data || [];
+    cartoes = cartoesRes.data || [];
+    guardados = guardadosRes.data || [];
+
+    atualizarTela();
+  }
+
+  async function salvarGasto() {
+    const payload = {
+      usuario: document.getElementById("gastoUsuario").value,
+      descricao: document.getElementById("gastoDescricao").value,
+      categoria: document.getElementById("gastoCategoria").value,
+      tipo: document.getElementById("gastoTipo").value,
+      valor: Number(document.getElementById("gastoValor").value || 0),
+      data: document.getElementById("gastoData").value
+    };
+
+    if (!payload.descricao || !payload.valor || !payload.data) {
+      mensagem("Preencha descrição, valor e data.", "error");
+      return;
+    }
+
+    const { error } = await db.from("gastos").insert(payload);
+    if (error) return mensagem(error.message, "error");
+
+    document.getElementById("gastoDescricao").value = "";
+    document.getElementById("gastoValor").value = "";
+    mensagem("Gasto salvo com sucesso.");
+    carregarTudo();
+  }
+
+  async function salvarCartao() {
+    const payload = {
+      usuario: document.getElementById("cartaoUsuario").value,
+      nome_cartao: document.getElementById("cartaoNome").value,
+      descricao: document.getElementById("cartaoDescricao").value,
+      categoria: document.getElementById("cartaoCategoria").value,
+      valor: Number(document.getElementById("cartaoValor").value || 0),
+      data: document.getElementById("cartaoData").value,
+      parcelas: 1
+    };
+
+    if (!payload.nome_cartao || !payload.descricao || !payload.valor || !payload.data) {
+      mensagem("Preencha cartão, descrição, valor e data.", "error");
+      return;
+    }
+
+    const { error } = await db.from("cartoes").insert(payload);
+    if (error) return mensagem(error.message, "error");
+
+    document.getElementById("cartaoDescricao").value = "";
+    document.getElementById("cartaoValor").value = "";
+    mensagem("Gasto de cartão salvo com sucesso.");
+    carregarTudo();
+  }
+
+  async function salvarGuardado() {
+    const payload = {
+      usuario: document.getElementById("guardadoUsuario").value,
+      conta: document.getElementById("guardadoConta").value,
+      valor: Number(document.getElementById("guardadoValor").value || 0),
+      data: document.getElementById("guardadoData").value,
+      observacao: document.getElementById("guardadoObs").value
+    };
+
+    if (!payload.conta || !payload.valor || !payload.data) {
+      mensagem("Preencha conta/meta, valor e data.", "error");
+      return;
+    }
+
+    const { error } = await db.from("guardados").insert(payload);
+    if (error) return mensagem(error.message, "error");
+
+    document.getElementById("guardadoValor").value = "";
+    document.getElementById("guardadoObs").value = "";
+    mensagem("Valor guardado salvo com sucesso.");
+    carregarTudo();
+  }
+
+  async function excluir(tabela, id) {
+    if (!confirm("Deseja excluir este lançamento?")) return;
+
+    const { error } = await db.from(tabela).delete().eq("id", id);
+    if (error) return mensagem(error.message, "error");
+
+    mensagem("Registro excluído.");
+    carregarTudo();
+  }
+
+  function atualizarTela() {
+    const mes = document.getElementById("mesFiltro").value;
+
+    const gastosMes = gastos.filter(g => g.data && g.data.slice(0,7) === mes);
+    const cartoesMes = cartoes.filter(c => c.data && c.data.slice(0,7) === mes);
+
+    const totalGastos = gastosMes.reduce((s,g) => s + Number(g.valor), 0);
+    const totalCartoes = cartoesMes.reduce((s,c) => s + Number(c.valor), 0);
+    const totalGuardado = guardados.reduce((s,g) => s + Number(g.valor), 0);
+
+    document.getElementById("totalGastos").innerText = moeda(totalGastos);
+    document.getElementById("totalCartoes").innerText = moeda(totalCartoes);
+    document.getElementById("totalMes").innerText = moeda(totalGastos + totalCartoes);
+    document.getElementById("totalGuardado").innerText = moeda(totalGuardado);
+
+    listarGastos();
+    listarCartoes();
+    listarGuardados();
+    desenharGraficosDashboard();
+  }
+
+  function listarGastos() {
+    document.getElementById("listaGastos").innerHTML = gastos.map(g => `
+      <tr>
+        <td>${g.data}</td>
+        <td>${g.usuario}</td>
+        <td>${g.descricao}</td>
+        <td>${g.categoria}</td>
+        <td>${g.tipo}</td>
+        <td><b>${moeda(g.valor)}</b></td>
+        <td><button class="btn-danger" onclick="excluir('gastos','${g.id}')">Excluir</button></td>
+      </tr>
+    `).join("");
+  }
+
+  function listarCartoes() {
+    document.getElementById("listaCartoes").innerHTML = cartoes.map(c => `
+      <tr>
+        <td>${c.data}</td>
+        <td>${c.usuario}</td>
+        <td>${c.nome_cartao}</td>
+        <td>${c.descricao}</td>
+        <td>${c.categoria}</td>
+        <td><b>${moeda(c.valor)}</b></td>
+        <td><button class="btn-danger" onclick="excluir('cartoes','${c.id}')">Excluir</button></td>
+      </tr>
+    `).join("");
+  }
+
+  function listarGuardados() {
+    document.getElementById("listaGuardados").innerHTML = guardados.map(g => `
+      <tr>
+        <td>${g.data}</td>
+        <td>${g.usuario}</td>
+        <td>${g.conta}</td>
+        <td>${g.observacao || ""}</td>
+        <td><b>${moeda(g.valor)}</b></td>
+        <td><button class="btn-danger" onclick="excluir('guardados','${g.id}')">Excluir</button></td>
+      </tr>
+    `).join("");
+  }
+
+  function agrupar(lista, campo) {
+    const mapa = {};
+    lista.forEach(item => {
+      mapa[item[campo]] = (mapa[item[campo]] || 0) + Number(item.valor || 0);
+    });
+    return mapa;
+  }
+
+  function desenharGraficosDashboard() {
+    const mes = document.getElementById("mesFiltro").value;
+    const base = [
+      ...gastos.filter(g => g.data && g.data.slice(0,7) === mes),
+      ...cartoes.filter(c => c.data && c.data.slice(0,7) === mes)
+    ];
+
+    const porCategoria = agrupar(base, "categoria");
+    const porPessoa = agrupar(base, "usuario");
+
+    if (chartCategoria) chartCategoria.destroy();
+    chartCategoria = new Chart(document.getElementById("graficoCategoria"), {
+      type: "bar",
+      data: {
+        labels: Object.keys(porCategoria),
+        datasets: [{
+          label: "Valor",
+          data: Object.values(porCategoria),
+          backgroundColor: "#5a633b",
+          borderRadius: 8
+        }]
+      }
+    });
+
+    if (chartPessoa) chartPessoa.destroy();
+    chartPessoa = new Chart(document.getElementById("graficoPessoa"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(porPessoa),
+        datasets: [{
+          data: Object.values(porPessoa),
+          backgroundColor: ["#d4af37", "#5a633b", "#b88918"]
+        }]
+      }
+    });
+  }
+
+  function desenharGraficoMensal() {
+    const mapa = {};
+    [...gastos, ...cartoes].forEach(item => {
+      const mes = item.data ? item.data.slice(0,7) : "";
+      if (!mes) return;
+      mapa[mes] = (mapa[mes] || 0) + Number(item.valor || 0);
+    });
+
+    const meses = Object.keys(mapa).sort();
+
+    if (chartMensal) chartMensal.destroy();
+    chartMensal = new Chart(document.getElementById("graficoMensal"), {
+      type: "bar",
+      data: {
+        labels: meses,
+        datasets: [{
+          label: "Total mensal",
+          data: meses.map(m => mapa[m]),
+          backgroundColor: "#d4af37",
+          borderRadius: 8
+        }]
+      }
+    });
+  }
+
+  function carregarCategorias() {
+    ["gastoCategoria", "cartaoCategoria"].forEach(id => {
+      const el = document.getElementById(id);
+      el.innerHTML = categorias.map(c => `<option>${c}</option>`).join("");
+    });
+  }
+
+  window.onload = async () => {
+    carregarCategorias();
+
+    document.getElementById("mesFiltro").value = mesAtual();
+    document.getElementById("gastoData").value = hoje();
+    document.getElementById("cartaoData").value = hoje();
+    document.getElementById("guardadoData").value = hoje();
+
+    document.getElementById("mesFiltro").addEventListener("change", atualizarTela);
+
+    const salvo = localStorage.getItem("usuario_financas_casal");
+    if (salvo) {
+      usuarioLogado = salvo;
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("appPage").classList.remove("hidden");
+      document.getElementById("usuarioAtual").innerText = usuarioLogado;
+      document.getElementById("gastoUsuario").value = usuarioLogado;
+      document.getElementById("cartaoUsuario").value = usuarioLogado;
+      await carregarTudo();
+    }
+  };
 </script>
 
 </body>
