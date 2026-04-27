@@ -1,125 +1,454 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Finanças do Casal</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{margin:0;font-family:Arial;background:#f4efe6;color:#3f4a2d}
-.login-page{display:grid;grid-template-columns:1fr 1fr;height:100vh}
-.login-photo{
-background:linear-gradient(to top,rgba(63,74,45,.85),rgba(63,74,45,.15)),
-url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG") center/cover no-repeat;
+:root{
+  --verde:#3f4a2d;
+  --verde2:#5a633b;
+  --dourado:#d4af37;
+  --dourado2:#b88918;
+  --bege:#f4efe6;
+  --branco:#fffdf8;
+  --card:#ffffff;
+  --texto:#243018;
+  --muted:#7b6a46;
+  --danger:#c0392b;
 }
-.login-panel{display:flex;align-items:center;justify-content:center}
-.card{background:white;padding:35px;border-radius:22px;width:360px;box-shadow:0 20px 45px #0002}
-button{cursor:pointer;border:0;border-radius:12px;padding:13px;font-weight:bold}
-.user-btn{width:48%;background:#eee;color:#333}
-.user-btn.active{background:#5a633b;color:white}
-.btn{width:100%;background:#d4af37;color:white;margin-top:15px}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #d4af37;border-radius:10px}
-.app{display:none;padding:20px}
-.menu button{margin:5px;background:#5a633b;color:white}
-.box{background:white;padding:20px;border-radius:18px;margin:15px 0}
-table{width:100%;border-collapse:collapse;background:white}
-th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:var(--bege);
+  color:var(--texto);
+}
+
+.hidden{display:none!important}
+
+.login{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+}
+
+.login-photo{
+  background:
+    linear-gradient(to bottom,rgba(63,74,45,.15),rgba(63,74,45,.85)),
+    url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG")
+    center/cover no-repeat;
+  position:relative;
+}
+
+.login-text{
+  position:absolute;
+  left:40px;
+  bottom:45px;
+  color:white;
+}
+
+.login-text small{
+  color:#f4d77a;
+  letter-spacing:4px;
+  font-weight:bold;
+}
+
+.login-text h1{
+  font-size:48px;
+  margin:10px 0;
+  line-height:1.05;
+}
+
+.login-panel{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:var(--branco);
+  border-radius:28px;
+  padding:34px;
+  box-shadow:0 25px 70px rgba(63,74,45,.18);
+  border:1px solid rgba(212,175,55,.35);
+}
+
+.logo{
+  width:66px;
+  height:66px;
+  border-radius:22px;
+  background:linear-gradient(135deg,var(--verde),var(--dourado));
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  margin-bottom:18px;
+}
+
+.login-card h2{
+  margin:0;
+  font-size:32px;
+  color:var(--verde);
+}
+
+.login-card p{
+  color:var(--muted);
+  margin-bottom:24px;
+}
+
+.user-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.user-btn{
+  border:1px solid rgba(212,175,55,.45);
+  background:white;
+  border-radius:18px;
+  padding:18px;
+  cursor:pointer;
+  font-weight:bold;
+  color:var(--verde);
+}
+
+.user-btn.active{
+  background:var(--verde);
+  color:white;
+  box-shadow:0 14px 28px rgba(63,74,45,.22);
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(212,175,55,.45);
+  margin:8px 0;
+  background:white;
+  outline:none;
+}
+
+.btn{
+  border:none;
+  border-radius:15px;
+  padding:14px 18px;
+  background:var(--dourado);
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.btn:hover{background:var(--dourado2)}
+
+.btn-green{background:var(--verde)}
+.btn-green:hover{background:var(--verde2)}
+
+.app{
+  display:none;
+  min-height:100vh;
+}
+
+.topbar{
+  background:linear-gradient(135deg,var(--verde),var(--verde2));
+  color:white;
+  padding:24px;
+  border-radius:0 0 32px 32px;
+}
+
+.topbar-inner{
+  max-width:1180px;
+  margin:auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+
+.topbar h1{
+  margin:0;
+  font-size:26px;
+}
+
+.topbar small{
+  color:#f6df91;
+}
+
+.container{
+  max-width:1180px;
+  margin:-28px auto 40px;
+  padding:0 18px;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.card{
+  background:white;
+  border-radius:24px;
+  padding:20px;
+  box-shadow:0 12px 35px rgba(63,74,45,.10);
+  border:1px solid rgba(212,175,55,.18);
+}
+
+.card .label{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.card .value{
+  font-size:25px;
+  font-weight:bold;
+  margin-top:8px;
+  color:var(--verde);
+}
+
+.nav{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.nav button{
+  background:white;
+  border:1px solid rgba(212,175,55,.22);
+  border-radius:18px;
+  padding:14px;
+  color:var(--verde);
+  font-weight:bold;
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(63,74,45,.06);
+}
+
+.nav button.active{
+  background:var(--verde);
+  color:white;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  text-align:left;
+  color:var(--muted);
+  background:var(--bege);
+  padding:12px;
+  font-size:13px;
+}
+
+td{
+  padding:12px;
+  border-bottom:1px solid rgba(212,175,55,.16);
+  font-size:14px;
+}
+
+.table-wrap{overflow-x:auto}
+
+.delete{
+  background:#fff1ee;
+  color:var(--danger);
+  border:none;
+  border-radius:10px;
+  padding:8px 10px;
+  cursor:pointer;
+}
+
+canvas{max-height:280px}
+
+@media(max-width:900px){
+  .login{grid-template-columns:1fr}
+  .login-photo{min-height:280px}
+  .summary{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}
+  .nav{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:520px){
+  .summary{grid-template-columns:1fr}
+  .login-text h1{font-size:34px}
+}
 </style>
 </head>
 
 <body>
 
-<div id="loginPage" class="login-page">
-  <div class="login-photo"></div>
+<section id="loginPage" class="login">
+  <div class="login-photo">
+    <div class="login-text">
+      <small>FINANÇAS DO CASAL</small>
+      <h1>Planejar juntos<br>é realizar melhor.</h1>
+      <p>Controle simples, bonito e compartilhado.</p>
+    </div>
+  </div>
 
   <div class="login-panel">
-    <div class="card">
-      <h1>Bem-vindos</h1>
+    <div class="login-card">
+      <div class="logo">♡</div>
+      <h2>Bem-vindos!</h2>
       <p>Escolha o usuário e informe a senha.</p>
 
-      <div style="display:flex;gap:10px">
+      <div class="user-grid">
         <button id="btnLua" class="user-btn active" onclick="setUser('Luã')">Luã</button>
         <button id="btnMayara" class="user-btn" onclick="setUser('Mayara')">Mayara</button>
       </div>
 
-      <input id="senha" type="password" placeholder="Senha">
-      <button class="btn" onclick="login()">Entrar</button>
+      <input id="senha" type="password" placeholder="Senha" />
+      <button class="btn" style="width:100%;margin-top:10px" onclick="login()">Entrar</button>
     </div>
   </div>
-</div>
+</section>
 
-<div id="app" class="app">
-  <h1>Finanças do Casal</h1>
-  <p>Usuário: <b id="usuarioAtual"></b></p>
-
-  <div class="menu">
-    <button onclick="mostrar('gastos')">Gastos</button>
-    <button onclick="mostrar('cartoes')">Cartões</button>
-    <button onclick="mostrar('guardados')">Guardados</button>
-    <button onclick="sair()">Sair</button>
+<section id="app" class="app">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <small>FINANÇAS DO CASAL</small>
+        <h1>Resumo financeiro</h1>
+        <p>Usuário: <b id="usuarioAtual"></b></p>
+      </div>
+      <div>
+        <input id="mesFiltro" type="month" />
+        <button class="btn" onclick="carregarTudo()">Atualizar</button>
+        <button class="btn btn-green" onclick="sair()">Sair</button>
+      </div>
+    </div>
   </div>
 
-  <div id="gastos" class="box">
-    <h2>Gastos</h2>
-    <select id="gastoUsuario">
-      <option>Luã</option><option>Mayara</option><option>Casal</option>
-    </select>
-    <input id="gastoDescricao" placeholder="Descrição">
-    <select id="gastoCategoria">
-      <option>Moradia</option><option>Mercado</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Outros</option>
-    </select>
-    <select id="gastoTipo">
-      <option>Mensal</option><option>Avulso</option>
-    </select>
-    <input id="gastoValor" type="number" placeholder="Valor">
-    <input id="gastoData" type="date">
-    <button class="btn" onclick="salvarGasto()">Salvar gasto</button>
+  <main class="container">
+    <div class="summary">
+      <div class="card"><div class="label">Gastos do mês</div><div id="totalGastos" class="value">R$ 0,00</div></div>
+      <div class="card"><div class="label">Cartões do mês</div><div id="totalCartoes" class="value">R$ 0,00</div></div>
+      <div class="card"><div class="label">Total do mês</div><div id="totalMes" class="value">R$ 0,00</div></div>
+      <div class="card"><div class="label">Total guardado</div><div id="totalGuardado" class="value">R$ 0,00</div></div>
+    </div>
 
-    <table>
-      <thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Valor</th></tr></thead>
-      <tbody id="listaGastos"></tbody>
-    </table>
-  </div>
+    <div class="nav">
+      <button class="active" onclick="abrirAba('dashboard',this)">Dashboard</button>
+      <button onclick="abrirAba('gastos',this)">Gastos</button>
+      <button onclick="abrirAba('cartoes',this)">Cartões</button>
+      <button onclick="abrirAba('guardados',this)">Guardados</button>
+      <button onclick="abrirAba('relatorios',this)">Relatórios</button>
+    </div>
 
-  <div id="cartoes" class="box" style="display:none">
-    <h2>Cartões</h2>
-    <select id="cartaoUsuario">
-      <option>Luã</option><option>Mayara</option><option>Casal</option>
-    </select>
-    <input id="cartaoNome" placeholder="Nome do cartão">
-    <input id="cartaoDescricao" placeholder="Descrição">
-    <select id="cartaoCategoria">
-      <option>Compras</option><option>Mercado</option><option>Lazer</option><option>Restaurante</option><option>Outros</option>
-    </select>
-    <input id="cartaoValor" type="number" placeholder="Valor">
-    <input id="cartaoData" type="date">
-    <button class="btn" onclick="salvarCartao()">Salvar cartão</button>
+    <section id="dashboard" class="aba">
+      <div class="grid">
+        <div class="card">
+          <h2>Gastos por categoria</h2>
+          <canvas id="graficoCategoria"></canvas>
+        </div>
+        <div class="card">
+          <h2>Gastos por pessoa</h2>
+          <canvas id="graficoPessoa"></canvas>
+        </div>
+      </div>
+    </section>
 
-    <table>
-      <thead><tr><th>Data</th><th>Usuário</th><th>Cartão</th><th>Descrição</th><th>Valor</th></tr></thead>
-      <tbody id="listaCartoes"></tbody>
-    </table>
-  </div>
+    <section id="gastos" class="aba hidden">
+      <div class="card">
+        <h2>Novo gasto</h2>
+        <div class="form-grid">
+          <select id="gastoUsuario"><option>Luã</option><option>Mayara</option><option>Casal</option></select>
+          <input id="gastoDescricao" placeholder="Descrição" />
+          <select id="gastoCategoria"><option>Moradia</option><option>Mercado</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Outros</option></select>
+          <select id="gastoTipo"><option>Mensal</option><option>Avulso</option></select>
+          <input id="gastoValor" type="number" placeholder="Valor" />
+          <input id="gastoData" type="date" />
+        </div>
+        <button class="btn" onclick="salvarGasto()">Salvar gasto</button>
+      </div>
 
-  <div id="guardados" class="box" style="display:none">
-    <h2>Valores Guardados</h2>
-    <select id="guardadoUsuario">
-      <option>Casal</option><option>Luã</option><option>Mayara</option>
-    </select>
-    <input id="guardadoConta" placeholder="Conta / Meta">
-    <input id="guardadoValor" type="number" placeholder="Valor">
-    <input id="guardadoData" type="date">
-    <input id="guardadoObs" placeholder="Observação">
-    <button class="btn" onclick="salvarGuardado()">Salvar valor</button>
+      <div class="card table-wrap">
+        <h2>Gastos cadastrados</h2>
+        <table>
+          <thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead>
+          <tbody id="listaGastos"></tbody>
+        </table>
+      </div>
+    </section>
 
-    <table>
-      <thead><tr><th>Data</th><th>Usuário</th><th>Conta</th><th>Valor</th></tr></thead>
-      <tbody id="listaGuardados"></tbody>
-    </table>
-  </div>
-</div>
+    <section id="cartoes" class="aba hidden">
+      <div class="card">
+        <h2>Novo gasto no cartão</h2>
+        <div class="form-grid">
+          <select id="cartaoUsuario"><option>Luã</option><option>Mayara</option><option>Casal</option></select>
+          <input id="cartaoNome" placeholder="Nome do cartão" />
+          <input id="cartaoDescricao" placeholder="Descrição" />
+          <select id="cartaoCategoria"><option>Compras</option><option>Mercado</option><option>Lazer</option><option>Restaurante</option><option>Outros</option></select>
+          <input id="cartaoValor" type="number" placeholder="Valor" />
+          <input id="cartaoData" type="date" />
+        </div>
+        <button class="btn" onclick="salvarCartao()">Salvar cartão</button>
+      </div>
+
+      <div class="card table-wrap">
+        <h2>Cartões cadastrados</h2>
+        <table>
+          <thead><tr><th>Data</th><th>Usuário</th><th>Cartão</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+          <tbody id="listaCartoes"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="guardados" class="aba hidden">
+      <div class="card">
+        <h2>Valor guardado</h2>
+        <div class="form-grid">
+          <select id="guardadoUsuario"><option>Casal</option><option>Luã</option><option>Mayara</option></select>
+          <input id="guardadoConta" placeholder="Conta / Meta" />
+          <input id="guardadoValor" type="number" placeholder="Valor" />
+          <input id="guardadoData" type="date" />
+          <input id="guardadoObs" placeholder="Observação" />
+        </div>
+        <button class="btn" onclick="salvarGuardado()">Salvar valor</button>
+      </div>
+
+      <div class="card table-wrap">
+        <h2>Valores guardados</h2>
+        <table>
+          <thead><tr><th>Data</th><th>Usuário</th><th>Conta</th><th>Valor</th><th></th></tr></thead>
+          <tbody id="listaGuardados"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="relatorios" class="aba hidden">
+      <div class="card">
+        <h2>Comparativo mensal</h2>
+        <canvas id="graficoMensal"></canvas>
+      </div>
+    </section>
+  </main>
+</section>
 
 <script>
 const db = window.supabase.createClient(
@@ -128,142 +457,134 @@ const db = window.supabase.createClient(
 );
 
 let usuario = "Luã";
+let gastos=[], cartoes=[], guardados=[];
+let chartCategoria, chartPessoa, chartMensal;
 
-function hoje(){
-  return new Date().toISOString().slice(0,10);
-}
+function moeda(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function hoje(){return new Date().toISOString().slice(0,10)}
+function mesAtual(){return new Date().toISOString().slice(0,7)}
 
-document.getElementById("gastoData").value = hoje();
-document.getElementById("cartaoData").value = hoje();
-document.getElementById("guardadoData").value = hoje();
+document.getElementById("gastoData").value=hoje();
+document.getElementById("cartaoData").value=hoje();
+document.getElementById("guardadoData").value=hoje();
+document.getElementById("mesFiltro").value=mesAtual();
 
 function setUser(nome){
-  usuario = nome;
-  document.getElementById("btnLua").classList.toggle("active", nome === "Luã");
-  document.getElementById("btnMayara").classList.toggle("active", nome === "Mayara");
+  usuario=nome;
+  btnLua.classList.toggle("active",nome==="Luã");
+  btnMayara.classList.toggle("active",nome==="Mayara");
 }
 
 async function login(){
-  const senha = document.getElementById("senha").value;
-
-  const { data, error } = await db
-    .from("usuarios")
-    .select("*")
-    .eq("nome", usuario)
-    .eq("senha", senha)
-    .maybeSingle();
-
-  if(error || !data){
-    alert("Usuário ou senha inválidos.");
-    return;
-  }
-
-  document.getElementById("loginPage").style.display = "none";
-  document.getElementById("app").style.display = "block";
-  document.getElementById("usuarioAtual").innerText = usuario;
-  document.getElementById("gastoUsuario").value = usuario;
-  document.getElementById("cartaoUsuario").value = usuario;
-
+  const senha=document.getElementById("senha").value;
+  const {data,error}=await db.from("usuarios").select("*").eq("nome",usuario).eq("senha",senha).maybeSingle();
+  if(error||!data){alert("Usuário ou senha inválidos.");return}
+  loginPage.style.display="none";
+  app.style.display="block";
+  usuarioAtual.innerText=usuario;
+  gastoUsuario.value=usuario;
+  cartaoUsuario.value=usuario;
   carregarTudo();
 }
 
-function sair(){
-  location.reload();
+function sair(){location.reload()}
+
+function abrirAba(id,btn){
+  document.querySelectorAll(".aba").forEach(a=>a.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  if(id==="relatorios") graficoMensal();
 }
 
-function mostrar(id){
-  ["gastos","cartoes","guardados"].forEach(x=>{
-    document.getElementById(x).style.display = x === id ? "block" : "none";
-  });
+async function carregarTudo(){
+  const gr=await db.from("gastos").select("*").order("data",{ascending:false});
+  const cr=await db.from("cartoes").select("*").order("data",{ascending:false});
+  const sr=await db.from("guardados").select("*").order("data",{ascending:false});
+  gastos=gr.data||[]; cartoes=cr.data||[]; guardados=sr.data||[];
+  atualizar();
+}
+
+function atualizar(){
+  const mes=mesFiltro.value;
+  const gm=gastos.filter(x=>x.data?.slice(0,7)===mes);
+  const cm=cartoes.filter(x=>x.data?.slice(0,7)===mes);
+  const tg=gm.reduce((s,x)=>s+Number(x.valor),0);
+  const tc=cm.reduce((s,x)=>s+Number(x.valor),0);
+  const guard=guardados.reduce((s,x)=>s+Number(x.valor),0);
+  totalGastos.innerText=moeda(tg);
+  totalCartoes.innerText=moeda(tc);
+  totalMes.innerText=moeda(tg+tc);
+  totalGuardado.innerText=moeda(guard);
+  listar();
+  graficos();
 }
 
 async function salvarGasto(){
-  const payload = {
-    usuario: document.getElementById("gastoUsuario").value,
-    descricao: document.getElementById("gastoDescricao").value,
-    categoria: document.getElementById("gastoCategoria").value,
-    tipo: document.getElementById("gastoTipo").value,
-    valor: Number(document.getElementById("gastoValor").value),
-    data: document.getElementById("gastoData").value
-  };
-
-  if(!payload.descricao || !payload.valor){
-    alert("Preencha descrição e valor.");
-    return;
-  }
-
-  const { error } = await db.from("gastos").insert(payload);
-  if(error){ alert(error.message); return; }
-
-  document.getElementById("gastoDescricao").value = "";
-  document.getElementById("gastoValor").value = "";
+  const payload={usuario:gastoUsuario.value,descricao:gastoDescricao.value,categoria:gastoCategoria.value,tipo:gastoTipo.value,valor:Number(gastoValor.value),data:gastoData.value};
+  if(!payload.descricao||!payload.valor){alert("Preencha descrição e valor.");return}
+  const {error}=await db.from("gastos").insert(payload);
+  if(error){alert(error.message);return}
+  gastoDescricao.value=""; gastoValor.value="";
   carregarTudo();
 }
 
 async function salvarCartao(){
-  const payload = {
-    usuario: document.getElementById("cartaoUsuario").value,
-    nome_cartao: document.getElementById("cartaoNome").value,
-    descricao: document.getElementById("cartaoDescricao").value,
-    categoria: document.getElementById("cartaoCategoria").value,
-    valor: Number(document.getElementById("cartaoValor").value),
-    data: document.getElementById("cartaoData").value,
-    parcelas: 1
-  };
-
-  if(!payload.nome_cartao || !payload.descricao || !payload.valor){
-    alert("Preencha cartão, descrição e valor.");
-    return;
-  }
-
-  const { error } = await db.from("cartoes").insert(payload);
-  if(error){ alert(error.message); return; }
-
-  document.getElementById("cartaoDescricao").value = "";
-  document.getElementById("cartaoValor").value = "";
+  const payload={usuario:cartaoUsuario.value,nome_cartao:cartaoNome.value,descricao:cartaoDescricao.value,categoria:cartaoCategoria.value,valor:Number(cartaoValor.value),data:cartaoData.value,parcelas:1};
+  if(!payload.nome_cartao||!payload.descricao||!payload.valor){alert("Preencha cartão, descrição e valor.");return}
+  const {error}=await db.from("cartoes").insert(payload);
+  if(error){alert(error.message);return}
+  cartaoDescricao.value=""; cartaoValor.value="";
   carregarTudo();
 }
 
 async function salvarGuardado(){
-  const payload = {
-    usuario: document.getElementById("guardadoUsuario").value,
-    conta: document.getElementById("guardadoConta").value,
-    valor: Number(document.getElementById("guardadoValor").value),
-    data: document.getElementById("guardadoData").value,
-    observacao: document.getElementById("guardadoObs").value
-  };
-
-  if(!payload.conta || !payload.valor){
-    alert("Preencha conta/meta e valor.");
-    return;
-  }
-
-  const { error } = await db.from("guardados").insert(payload);
-  if(error){ alert(error.message); return; }
-
-  document.getElementById("guardadoValor").value = "";
-  document.getElementById("guardadoObs").value = "";
+  const payload={usuario:guardadoUsuario.value,conta:guardadoConta.value,valor:Number(guardadoValor.value),data:guardadoData.value,observacao:guardadoObs.value};
+  if(!payload.conta||!payload.valor){alert("Preencha conta/meta e valor.");return}
+  const {error}=await db.from("guardados").insert(payload);
+  if(error){alert(error.message);return}
+  guardadoValor.value=""; guardadoObs.value="";
   carregarTudo();
 }
 
-async function carregarTudo(){
-  const gastos = await db.from("gastos").select("*").order("data", {ascending:false});
-  const cartoes = await db.from("cartoes").select("*").order("data", {ascending:false});
-  const guardados = await db.from("guardados").select("*").order("data", {ascending:false});
-
-  document.getElementById("listaGastos").innerHTML = (gastos.data || []).map(g=>`
-    <tr><td>${g.data}</td><td>${g.usuario}</td><td>${g.descricao}</td><td>${g.categoria}</td><td>R$ ${Number(g.valor).toFixed(2)}</td></tr>
-  `).join("");
-
-  document.getElementById("listaCartoes").innerHTML = (cartoes.data || []).map(c=>`
-    <tr><td>${c.data}</td><td>${c.usuario}</td><td>${c.nome_cartao}</td><td>${c.descricao}</td><td>R$ ${Number(c.valor).toFixed(2)}</td></tr>
-  `).join("");
-
-  document.getElementById("listaGuardados").innerHTML = (guardados.data || []).map(g=>`
-    <tr><td>${g.data}</td><td>${g.usuario}</td><td>${g.conta}</td><td>R$ ${Number(g.valor).toFixed(2)}</td></tr>
-  `).join("");
+async function excluir(tabela,id){
+  if(!confirm("Excluir este registro?"))return;
+  await db.from(tabela).delete().eq("id",id);
+  carregarTudo();
 }
-</script>
 
+function listar(){
+  listaGastos.innerHTML=gastos.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.descricao}</td><td>${x.categoria}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('gastos','${x.id}')">Excluir</button></td></tr>`).join("");
+  listaCartoes.innerHTML=cartoes.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.nome_cartao}</td><td>${x.descricao}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('cartoes','${x.id}')">Excluir</button></td></tr>`).join("");
+  listaGuardados.innerHTML=guardados.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.conta}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('guardados','${x.id}')">Excluir</button></td></tr>`).join("");
+}
+
+function agrupar(base,campo){
+  const m={}; base.forEach(x=>m[x[campo]]=(m[x[campo]]||0)+Number(x.valor||0)); return m;
+}
+
+function graficos(){
+  const mes=mesFiltro.value;
+  const base=[...gastos,...cartoes].filter(x=>x.data?.slice(0,7)===mes);
+  const cat=agrupar(base,"categoria");
+  const pes=agrupar(base,"usuario");
+
+  if(chartCategoria)chartCategoria.destroy();
+  chartCategoria=new Chart(graficoCategoria,{type:"bar",data:{labels:Object.keys(cat),datasets:[{data:Object.values(cat),backgroundColor:"#5a633b",borderRadius:10}]}});
+
+  if(chartPessoa)chartPessoa.destroy();
+  chartPessoa=new Chart(graficoPessoa,{type:"doughnut",data:{labels:Object.keys(pes),datasets:[{data:Object.values(pes),backgroundColor:["#d4af37","#5a633b","#b88918"]}]}});
+}
+
+function graficoMensal(){
+  const m={};
+  [...gastos,...cartoes].forEach(x=>{const mes=x.data?.slice(0,7); if(mes)m[mes]=(m[mes]||0)+Number(x.valor)});
+  const labels=Object.keys(m).sort();
+  if(chartMensal)chartMensal.destroy();
+  chartMensal=new Chart(graficoMensal,{type:"bar",data:{labels,datasets:[{data:labels.map(x=>m[x]),backgroundColor:"#d4af37",borderRadius:10}]}});
+}
+
+mesFiltro.addEventListener("change",atualizar);
+</script>
 </body>
 </html>
