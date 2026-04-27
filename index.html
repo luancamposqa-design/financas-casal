@@ -16,287 +16,66 @@
   --dourado2:#b88918;
   --bege:#f4efe6;
   --branco:#fffdf8;
-  --card:#ffffff;
   --texto:#243018;
   --muted:#7b6a46;
   --danger:#c0392b;
 }
-
 *{box-sizing:border-box}
-
-body{
-  margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:var(--bege);
-  color:var(--texto);
-}
-
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bege);color:var(--texto)}
 .hidden{display:none!important}
-
-.login{
-  min-height:100vh;
-  display:grid;
-  grid-template-columns:1fr 1fr;
-}
-
+.login{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
 .login-photo{
-  background:
-    linear-gradient(to bottom,rgba(63,74,45,.15),rgba(63,74,45,.85)),
-    url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG")
-    center/cover no-repeat;
+  background:linear-gradient(to bottom,rgba(63,74,45,.15),rgba(63,74,45,.85)),
+  url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG") center/cover no-repeat;
   position:relative;
 }
-
-.login-text{
-  position:absolute;
-  left:40px;
-  bottom:45px;
-  color:white;
-}
-
-.login-text small{
-  color:#f4d77a;
-  letter-spacing:4px;
-  font-weight:bold;
-}
-
-.login-text h1{
-  font-size:48px;
-  margin:10px 0;
-  line-height:1.05;
-}
-
-.login-panel{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:28px;
-}
-
-.login-card{
-  width:100%;
-  max-width:420px;
-  background:var(--branco);
-  border-radius:28px;
-  padding:34px;
-  box-shadow:0 25px 70px rgba(63,74,45,.18);
-  border:1px solid rgba(212,175,55,.35);
-}
-
-.logo{
-  width:66px;
-  height:66px;
-  border-radius:22px;
-  background:linear-gradient(135deg,var(--verde),var(--dourado));
-  color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
-  margin-bottom:18px;
-}
-
-.login-card h2{
-  margin:0;
-  font-size:32px;
-  color:var(--verde);
-}
-
-.login-card p{
-  color:var(--muted);
-  margin-bottom:24px;
-}
-
-.user-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-}
-
-.user-btn{
-  border:1px solid rgba(212,175,55,.45);
-  background:white;
-  border-radius:18px;
-  padding:18px;
-  cursor:pointer;
-  font-weight:bold;
-  color:var(--verde);
-}
-
-.user-btn.active{
-  background:var(--verde);
-  color:white;
-  box-shadow:0 14px 28px rgba(63,74,45,.22);
-}
-
-input,select{
-  width:100%;
-  padding:14px;
-  border-radius:14px;
-  border:1px solid rgba(212,175,55,.45);
-  margin:8px 0;
-  background:white;
-  outline:none;
-}
-
-.btn{
-  border:none;
-  border-radius:15px;
-  padding:14px 18px;
-  background:var(--dourado);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
+.login-text{position:absolute;left:40px;bottom:45px;color:white}
+.login-text small{color:#f4d77a;letter-spacing:4px;font-weight:bold}
+.login-text h1{font-size:48px;margin:10px 0;line-height:1.05}
+.login-panel{display:flex;align-items:center;justify-content:center;padding:28px}
+.login-card{width:100%;max-width:420px;background:var(--branco);border-radius:28px;padding:34px;box-shadow:0 25px 70px rgba(63,74,45,.18);border:1px solid rgba(212,175,55,.35)}
+.logo{width:66px;height:66px;border-radius:22px;background:linear-gradient(135deg,var(--verde),var(--dourado));color:white;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:18px}
+.user-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.user-btn{border:1px solid rgba(212,175,55,.45);background:white;border-radius:18px;padding:18px;cursor:pointer;font-weight:bold;color:var(--verde)}
+.user-btn.active{background:var(--verde);color:white;box-shadow:0 14px 28px rgba(63,74,45,.22)}
+input,select{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(212,175,55,.45);margin:8px 0;background:white;outline:none}
+.btn{border:none;border-radius:15px;padding:14px 18px;background:var(--dourado);color:white;font-weight:bold;cursor:pointer}
 .btn:hover{background:var(--dourado2)}
-
 .btn-green{background:var(--verde)}
 .btn-green:hover{background:var(--verde2)}
-
-.app{
-  display:none;
-  min-height:100vh;
-}
-
-.topbar{
-  background:linear-gradient(135deg,var(--verde),var(--verde2));
-  color:white;
-  padding:24px;
-  border-radius:0 0 32px 32px;
-}
-
-.topbar-inner{
-  max-width:1180px;
-  margin:auto;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-
-.topbar h1{
-  margin:0;
-  font-size:26px;
-}
-
-.topbar small{
-  color:#f6df91;
-}
-
-.container{
-  max-width:1180px;
-  margin:-28px auto 40px;
-  padding:0 18px;
-}
-
-.summary{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:18px;
-}
-
-.card{
-  background:white;
-  border-radius:24px;
-  padding:20px;
-  box-shadow:0 12px 35px rgba(63,74,45,.10);
-  border:1px solid rgba(212,175,55,.18);
-}
-
-.card .label{
-  color:var(--muted);
-  font-size:13px;
-}
-
-.card .value{
-  font-size:25px;
-  font-weight:bold;
-  margin-top:8px;
-  color:var(--verde);
-}
-
-.nav{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-
-.nav button{
-  background:white;
-  border:1px solid rgba(212,175,55,.22);
-  border-radius:18px;
-  padding:14px;
-  color:var(--verde);
-  font-weight:bold;
-  cursor:pointer;
-  box-shadow:0 8px 20px rgba(63,74,45,.06);
-}
-
-.nav button.active{
-  background:var(--verde);
-  color:white;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-}
-
-.form-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th{
-  text-align:left;
-  color:var(--muted);
-  background:var(--bege);
-  padding:12px;
-  font-size:13px;
-}
-
-td{
-  padding:12px;
-  border-bottom:1px solid rgba(212,175,55,.16);
-  font-size:14px;
-}
-
+.app{display:none;min-height:100vh}
+.topbar{background:linear-gradient(135deg,var(--verde),var(--verde2));color:white;padding:24px;border-radius:0 0 32px 32px}
+.topbar-inner{max-width:1180px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.topbar h1{margin:0;font-size:26px}
+.topbar small{color:#f6df91}
+.container{max-width:1180px;margin:-28px auto 40px;padding:0 18px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.card{background:white;border-radius:24px;padding:20px;box-shadow:0 12px 35px rgba(63,74,45,.10);border:1px solid rgba(212,175,55,.18);margin-bottom:18px}
+.label{color:var(--muted);font-size:13px}
+.value{font-size:25px;font-weight:bold;margin-top:8px;color:var(--verde)}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+.nav button{background:white;border:1px solid rgba(212,175,55,.22);border-radius:18px;padding:14px;color:var(--verde);font-weight:bold;cursor:pointer;box-shadow:0 8px 20px rgba(63,74,45,.06)}
+.nav button.active{background:var(--verde);color:white}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cards-cartao{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cartao-card{background:linear-gradient(135deg,var(--verde),var(--verde2));color:white;border-radius:24px;padding:20px;box-shadow:0 14px 35px rgba(63,74,45,.25)}
+.cartao-card small{color:#f6df91}
+.cartao-card h3{margin:8px 0;font-size:22px}
+.barra{height:10px;background:rgba(255,255,255,.25);border-radius:999px;overflow:hidden;margin:14px 0}
+.barra span{display:block;height:100%;background:var(--dourado);border-radius:999px}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;color:var(--muted);background:var(--bege);padding:12px;font-size:13px}
+td{padding:12px;border-bottom:1px solid rgba(212,175,55,.16);font-size:14px}
 .table-wrap{overflow-x:auto}
-
-.delete{
-  background:#fff1ee;
-  color:var(--danger);
-  border:none;
-  border-radius:10px;
-  padding:8px 10px;
-  cursor:pointer;
-}
-
+.delete{background:#fff1ee;color:var(--danger);border:none;border-radius:10px;padding:8px 10px;cursor:pointer}
 canvas{max-height:280px}
-
 @media(max-width:900px){
-  .login{grid-template-columns:1fr}
-  .login-photo{min-height:280px}
-  .summary{grid-template-columns:1fr 1fr}
-  .grid{grid-template-columns:1fr}
-  .nav{grid-template-columns:1fr 1fr}
-  .form-grid{grid-template-columns:1fr}
+  .login{grid-template-columns:1fr}.login-photo{min-height:280px}
+  .summary,.cards-cartao{grid-template-columns:1fr 1fr}
+  .grid{grid-template-columns:1fr}.nav{grid-template-columns:1fr 1fr}.form-grid{grid-template-columns:1fr}
 }
-
-@media(max-width:520px){
-  .summary{grid-template-columns:1fr}
-  .login-text h1{font-size:34px}
-}
+@media(max-width:520px){.summary,.cards-cartao{grid-template-columns:1fr}.login-text h1{font-size:34px}}
 </style>
 </head>
 
@@ -316,12 +95,10 @@ canvas{max-height:280px}
       <div class="logo">♡</div>
       <h2>Bem-vindos!</h2>
       <p>Escolha o usuário e informe a senha.</p>
-
       <div class="user-grid">
         <button id="btnLua" class="user-btn active" onclick="setUser('Luã')">Luã</button>
         <button id="btnMayara" class="user-btn" onclick="setUser('Mayara')">Mayara</button>
       </div>
-
       <input id="senha" type="password" placeholder="Senha" />
       <button class="btn" style="width:100%;margin-top:10px" onclick="login()">Entrar</button>
     </div>
@@ -362,14 +139,8 @@ canvas{max-height:280px}
 
     <section id="dashboard" class="aba">
       <div class="grid">
-        <div class="card">
-          <h2>Gastos por categoria</h2>
-          <canvas id="graficoCategoria"></canvas>
-        </div>
-        <div class="card">
-          <h2>Gastos por pessoa</h2>
-          <canvas id="graficoPessoa"></canvas>
-        </div>
+        <div class="card"><h2>Gastos por categoria</h2><canvas id="graficoCategoria"></canvas></div>
+        <div class="card"><h2>Gastos por pessoa</h2><canvas id="graficoPessoa"></canvas></div>
       </div>
     </section>
 
@@ -386,34 +157,45 @@ canvas{max-height:280px}
         </div>
         <button class="btn" onclick="salvarGasto()">Salvar gasto</button>
       </div>
-
       <div class="card table-wrap">
         <h2>Gastos cadastrados</h2>
-        <table>
-          <thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="listaGastos"></tbody>
-        </table>
+        <table><thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Valor</th><th></th></tr></thead><tbody id="listaGastos"></tbody></table>
       </div>
     </section>
 
     <section id="cartoes" class="aba hidden">
+      <div class="cards-cartao" id="cardsCartoes"></div>
+
       <div class="card">
-        <h2>Novo gasto no cartão</h2>
+        <h2>Cadastrar cartão</h2>
+        <div class="form-grid">
+          <input id="novoCartaoNome" placeholder="Nome do cartão" />
+          <select id="novoCartaoDono"><option>Luã</option><option>Mayara</option><option>Casal</option></select>
+          <input id="novoCartaoLimite" type="number" placeholder="Limite" />
+          <input id="novoCartaoFechamento" type="number" placeholder="Dia fechamento" />
+          <input id="novoCartaoVencimento" type="number" placeholder="Dia vencimento" />
+        </div>
+        <button class="btn" onclick="salvarCartaoCadastro()">Salvar cartão</button>
+      </div>
+
+      <div class="card">
+        <h2>Lançar compra no cartão</h2>
         <div class="form-grid">
           <select id="cartaoUsuario"><option>Luã</option><option>Mayara</option><option>Casal</option></select>
-          <input id="cartaoNome" placeholder="Nome do cartão" />
-          <input id="cartaoDescricao" placeholder="Descrição" />
+          <select id="cartaoNome"></select>
+          <input id="cartaoDescricao" placeholder="Descrição da compra" />
           <select id="cartaoCategoria"><option>Compras</option><option>Mercado</option><option>Lazer</option><option>Restaurante</option><option>Outros</option></select>
-          <input id="cartaoValor" type="number" placeholder="Valor" />
+          <input id="cartaoValor" type="number" placeholder="Valor total" />
+          <input id="cartaoParcelas" type="number" placeholder="Parcelas" value="1" />
           <input id="cartaoData" type="date" />
         </div>
-        <button class="btn" onclick="salvarCartao()">Salvar cartão</button>
+        <button class="btn" onclick="salvarCompraCartao()">Salvar compra</button>
       </div>
 
       <div class="card table-wrap">
-        <h2>Cartões cadastrados</h2>
+        <h2>Fatura / lançamentos</h2>
         <table>
-          <thead><tr><th>Data</th><th>Usuário</th><th>Cartão</th><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+          <thead><tr><th>Data</th><th>Dono</th><th>Cartão</th><th>Descrição</th><th>Categoria</th><th>Parcela</th><th>Valor</th><th></th></tr></thead>
           <tbody id="listaCartoes"></tbody>
         </table>
       </div>
@@ -431,21 +213,14 @@ canvas{max-height:280px}
         </div>
         <button class="btn" onclick="salvarGuardado()">Salvar valor</button>
       </div>
-
       <div class="card table-wrap">
         <h2>Valores guardados</h2>
-        <table>
-          <thead><tr><th>Data</th><th>Usuário</th><th>Conta</th><th>Valor</th><th></th></tr></thead>
-          <tbody id="listaGuardados"></tbody>
-        </table>
+        <table><thead><tr><th>Data</th><th>Usuário</th><th>Conta</th><th>Valor</th><th></th></tr></thead><tbody id="listaGuardados"></tbody></table>
       </div>
     </section>
 
     <section id="relatorios" class="aba hidden">
-      <div class="card">
-        <h2>Comparativo mensal</h2>
-        <canvas id="graficoMensal"></canvas>
-      </div>
+      <div class="card"><h2>Comparativo mensal</h2><canvas id="graficoMensal"></canvas></div>
     </section>
   </main>
 </section>
@@ -457,8 +232,8 @@ const db = window.supabase.createClient(
 );
 
 let usuario = "Luã";
-let gastos=[], cartoes=[], guardados=[];
-let chartCategoria, chartPessoa, chartMensal;
+let gastos=[], cartoes=[], guardados=[], cartoesCadastro=[];
+let chartCategoria, chartPessoa, chartMensalObj;
 
 function moeda(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
 function hoje(){return new Date().toISOString().slice(0,10)}
@@ -494,15 +269,21 @@ function abrirAba(id,btn){
   document.getElementById(id).classList.remove("hidden");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
   btn.classList.add("active");
-  if(id==="relatorios") graficoMensal();
+  if(id==="relatorios") desenharGraficoMensal();
 }
 
 async function carregarTudo(){
   const gr=await db.from("gastos").select("*").order("data",{ascending:false});
   const cr=await db.from("cartoes").select("*").order("data",{ascending:false});
   const sr=await db.from("guardados").select("*").order("data",{ascending:false});
-  gastos=gr.data||[]; cartoes=cr.data||[]; guardados=sr.data||[];
+  const cc=await db.from("cartoes_cadastro").select("*").order("criado_em",{ascending:false});
+  gastos=gr.data||[]; cartoes=cr.data||[]; guardados=sr.data||[]; cartoesCadastro=cc.data||[];
+  atualizarSelectCartoes();
   atualizar();
+}
+
+function atualizarSelectCartoes(){
+  cartaoNome.innerHTML = cartoesCadastro.map(c=>`<option value="${c.nome}">${c.nome}</option>`).join("");
 }
 
 function atualizar(){
@@ -517,7 +298,8 @@ function atualizar(){
   totalMes.innerText=moeda(tg+tc);
   totalGuardado.innerText=moeda(guard);
   listar();
-  graficos();
+  desenharCardsCartoes();
+  graficosDashboard();
 }
 
 async function salvarGasto(){
@@ -529,12 +311,48 @@ async function salvarGasto(){
   carregarTudo();
 }
 
-async function salvarCartao(){
-  const payload={usuario:cartaoUsuario.value,nome_cartao:cartaoNome.value,descricao:cartaoDescricao.value,categoria:cartaoCategoria.value,valor:Number(cartaoValor.value),data:cartaoData.value,parcelas:1};
-  if(!payload.nome_cartao||!payload.descricao||!payload.valor){alert("Preencha cartão, descrição e valor.");return}
-  const {error}=await db.from("cartoes").insert(payload);
+async function salvarCartaoCadastro(){
+  const payload={
+    nome:novoCartaoNome.value,
+    dono:novoCartaoDono.value,
+    limite:Number(novoCartaoLimite.value),
+    fechamento:Number(novoCartaoFechamento.value),
+    vencimento:Number(novoCartaoVencimento.value)
+  };
+  if(!payload.nome||!payload.limite||!payload.fechamento||!payload.vencimento){alert("Preencha todos os dados do cartão.");return}
+  const {error}=await db.from("cartoes_cadastro").insert(payload);
   if(error){alert(error.message);return}
-  cartaoDescricao.value=""; cartaoValor.value="";
+  novoCartaoNome.value=""; novoCartaoLimite.value=""; novoCartaoFechamento.value=""; novoCartaoVencimento.value="";
+  carregarTudo();
+}
+
+async function salvarCompraCartao(){
+  const parcelas=Number(cartaoParcelas.value||1);
+  const valorTotal=Number(cartaoValor.value||0);
+  const valorParcela=valorTotal/parcelas;
+  const dataBase=new Date(cartaoData.value+"T00:00:00");
+
+  if(!cartaoNome.value||!cartaoDescricao.value||!valorTotal){alert("Preencha cartão, descrição e valor.");return}
+
+  const registros=[];
+  for(let i=0;i<parcelas;i++){
+    const dataParcela=new Date(dataBase);
+    dataParcela.setMonth(dataParcela.getMonth()+i);
+    registros.push({
+      usuario:cartaoUsuario.value,
+      nome_cartao:cartaoNome.value,
+      descricao:cartaoDescricao.value,
+      categoria:cartaoCategoria.value,
+      valor:Number(valorParcela.toFixed(2)),
+      data:dataParcela.toISOString().slice(0,10),
+      parcelas:parcelas,
+      parcela_atual:i+1
+    });
+  }
+
+  const {error}=await db.from("cartoes").insert(registros);
+  if(error){alert(error.message);return}
+  cartaoDescricao.value=""; cartaoValor.value=""; cartaoParcelas.value=1;
   carregarTudo();
 }
 
@@ -555,15 +373,36 @@ async function excluir(tabela,id){
 
 function listar(){
   listaGastos.innerHTML=gastos.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.descricao}</td><td>${x.categoria}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('gastos','${x.id}')">Excluir</button></td></tr>`).join("");
-  listaCartoes.innerHTML=cartoes.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.nome_cartao}</td><td>${x.descricao}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('cartoes','${x.id}')">Excluir</button></td></tr>`).join("");
+  listaCartoes.innerHTML=cartoes.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.nome_cartao}</td><td>${x.descricao}</td><td>${x.categoria}</td><td>${x.parcela_atual||1}/${x.parcelas||1}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('cartoes','${x.id}')">Excluir</button></td></tr>`).join("");
   listaGuardados.innerHTML=guardados.map(x=>`<tr><td>${x.data}</td><td>${x.usuario}</td><td>${x.conta}</td><td>${moeda(x.valor)}</td><td><button class="delete" onclick="excluir('guardados','${x.id}')">Excluir</button></td></tr>`).join("");
+}
+
+function desenharCardsCartoes(){
+  const mes=mesFiltro.value;
+  cardsCartoes.innerHTML=cartoesCadastro.map(c=>{
+    const fatura=cartoes.filter(x=>x.nome_cartao===c.nome && x.data?.slice(0,7)===mes).reduce((s,x)=>s+Number(x.valor),0);
+    const disponivel=Number(c.limite)-fatura;
+    const pct=Math.min(100,(fatura/Number(c.limite))*100);
+    return `
+      <div class="cartao-card">
+        <small>${c.dono}</small>
+        <h3>${c.nome}</h3>
+        <p>Fatura atual: <b>${moeda(fatura)}</b></p>
+        <div class="barra"><span style="width:${pct}%"></span></div>
+        <p>Limite: ${moeda(c.limite)}</p>
+        <p>Disponível: ${moeda(disponivel)}</p>
+        <p>Fecha dia ${c.fechamento} • Vence dia ${c.vencimento}</p>
+        <button class="delete" onclick="excluir('cartoes_cadastro','${c.id}')">Excluir cartão</button>
+      </div>
+    `;
+  }).join("");
 }
 
 function agrupar(base,campo){
   const m={}; base.forEach(x=>m[x[campo]]=(m[x[campo]]||0)+Number(x.valor||0)); return m;
 }
 
-function graficos(){
+function graficosDashboard(){
   const mes=mesFiltro.value;
   const base=[...gastos,...cartoes].filter(x=>x.data?.slice(0,7)===mes);
   const cat=agrupar(base,"categoria");
@@ -576,12 +415,12 @@ function graficos(){
   chartPessoa=new Chart(graficoPessoa,{type:"doughnut",data:{labels:Object.keys(pes),datasets:[{data:Object.values(pes),backgroundColor:["#d4af37","#5a633b","#b88918"]}]}});
 }
 
-function graficoMensal(){
+function desenharGraficoMensal(){
   const m={};
   [...gastos,...cartoes].forEach(x=>{const mes=x.data?.slice(0,7); if(mes)m[mes]=(m[mes]||0)+Number(x.valor)});
   const labels=Object.keys(m).sort();
-  if(chartMensal)chartMensal.destroy();
-  chartMensal=new Chart(graficoMensal,{type:"bar",data:{labels,datasets:[{data:labels.map(x=>m[x]),backgroundColor:"#d4af37",borderRadius:10}]}});
+  if(chartMensalObj)chartMensalObj.destroy();
+  chartMensalObj=new Chart(graficoMensal,{type:"bar",data:{labels,datasets:[{data:labels.map(x=>m[x]),backgroundColor:"#d4af37",borderRadius:10}]}});
 }
 
 mesFiltro.addEventListener("change",atualizar);
