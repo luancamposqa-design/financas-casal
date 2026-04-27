@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -8,202 +7,262 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-:root {
-  --verde:#3f4a2d;
-  --verde2:#5a633b;
-  --dourado:#d4af37;
-  --bege:#f4efe6;
-  --branco:#fffdf8;
+body{margin:0;font-family:Arial;background:#f4efe6;color:#3f4a2d}
+.login-page{display:grid;grid-template-columns:1fr 1fr;height:100vh}
+.login-photo{
+background:linear-gradient(to top,rgba(63,74,45,.85),rgba(63,74,45,.15)),
+url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG") center/cover no-repeat;
 }
-
-body {
-  margin:0;
-  font-family: Arial;
-  background:var(--bege);
-}
-
-/* ===== LOGIN ===== */
-
-.login-page {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  height:100vh;
-}
-
-.login-photo {
-  background:
-  linear-gradient(to top, rgba(63,74,45,.85), rgba(63,74,45,.15)),
-  url("https://raw.githubusercontent.com/luancamposqa-design/financas-casal/main/casal-login.JPG")
-  center/cover no-repeat;
-}
-
-.login-panel {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.login-card {
-  background:white;
-  padding:30px;
-  border-radius:20px;
-  width:350px;
-  box-shadow:0 20px 40px rgba(0,0,0,.15);
-}
-
-.user-btn {
-  width:48%;
-  padding:15px;
-  border-radius:15px;
-  border:1px solid #ccc;
-  cursor:pointer;
-}
-
-.user-btn.active {
-  background:var(--verde2);
-  color:white;
-}
-
-.btn {
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:var(--dourado);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-
-/* ===== APP ===== */
-
-.app {
-  display:none;
-  padding:20px;
-}
-
+.login-panel{display:flex;align-items:center;justify-content:center}
+.card{background:white;padding:35px;border-radius:22px;width:360px;box-shadow:0 20px 45px #0002}
+button{cursor:pointer;border:0;border-radius:12px;padding:13px;font-weight:bold}
+.user-btn{width:48%;background:#eee;color:#333}
+.user-btn.active{background:#5a633b;color:white}
+.btn{width:100%;background:#d4af37;color:white;margin-top:15px}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #d4af37;border-radius:10px}
+.app{display:none;padding:20px}
+.menu button{margin:5px;background:#5a633b;color:white}
+.box{background:white;padding:20px;border-radius:18px;margin:15px 0}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{padding:10px;border-bottom:1px solid #ddd;text-align:left}
 </style>
-
 </head>
 
 <body>
 
-<!-- LOGIN -->
-
 <div id="loginPage" class="login-page">
-
   <div class="login-photo"></div>
 
   <div class="login-panel">
-    <div class="login-card">
+    <div class="card">
+      <h1>Bem-vindos</h1>
+      <p>Escolha o usuário e informe a senha.</p>
 
-```
-  <h2>Bem-vindos</h2>
+      <div style="display:flex;gap:10px">
+        <button id="btnLua" class="user-btn active" onclick="setUser('Luã')">Luã</button>
+        <button id="btnMayara" class="user-btn" onclick="setUser('Mayara')">Mayara</button>
+      </div>
 
-  <div style="display:flex;gap:10px;">
-    <button id="btnLua" class="user-btn active" onclick="setUser('Luã')">Luã</button>
-    <button id="btnMayara" class="user-btn" onclick="setUser('Mayara')">Mayara</button>
+      <input id="senha" type="password" placeholder="Senha">
+      <button class="btn" onclick="login()">Entrar</button>
+    </div>
   </div>
-
-  <br>
-
-  <input id="senha" type="password" placeholder="Senha">
-
-  <br><br>
-
-  <button class="btn" onclick="login()">Entrar</button>
-
 </div>
-```
-
-  </div>
-
-</div>
-
-<!-- APP -->
 
 <div id="app" class="app">
+  <h1>Finanças do Casal</h1>
+  <p>Usuário: <b id="usuarioAtual"></b></p>
 
-  <h1>Controle Financeiro 💰</h1>
+  <div class="menu">
+    <button onclick="mostrar('gastos')">Gastos</button>
+    <button onclick="mostrar('cartoes')">Cartões</button>
+    <button onclick="mostrar('guardados')">Guardados</button>
+    <button onclick="sair()">Sair</button>
+  </div>
 
-  <input id="desc" placeholder="Descrição">
-  <input id="valor" type="number" placeholder="Valor">
+  <div id="gastos" class="box">
+    <h2>Gastos</h2>
+    <select id="gastoUsuario">
+      <option>Luã</option><option>Mayara</option><option>Casal</option>
+    </select>
+    <input id="gastoDescricao" placeholder="Descrição">
+    <select id="gastoCategoria">
+      <option>Moradia</option><option>Mercado</option><option>Transporte</option><option>Saúde</option><option>Lazer</option><option>Outros</option>
+    </select>
+    <select id="gastoTipo">
+      <option>Mensal</option><option>Avulso</option>
+    </select>
+    <input id="gastoValor" type="number" placeholder="Valor">
+    <input id="gastoData" type="date">
+    <button class="btn" onclick="salvarGasto()">Salvar gasto</button>
 
-<br><br>
+    <table>
+      <thead><tr><th>Data</th><th>Usuário</th><th>Descrição</th><th>Categoria</th><th>Valor</th></tr></thead>
+      <tbody id="listaGastos"></tbody>
+    </table>
+  </div>
 
-<button class="btn" onclick="salvar()">Salvar</button>
+  <div id="cartoes" class="box" style="display:none">
+    <h2>Cartões</h2>
+    <select id="cartaoUsuario">
+      <option>Luã</option><option>Mayara</option><option>Casal</option>
+    </select>
+    <input id="cartaoNome" placeholder="Nome do cartão">
+    <input id="cartaoDescricao" placeholder="Descrição">
+    <select id="cartaoCategoria">
+      <option>Compras</option><option>Mercado</option><option>Lazer</option><option>Restaurante</option><option>Outros</option>
+    </select>
+    <input id="cartaoValor" type="number" placeholder="Valor">
+    <input id="cartaoData" type="date">
+    <button class="btn" onclick="salvarCartao()">Salvar cartão</button>
 
-  <ul id="lista"></ul>
+    <table>
+      <thead><tr><th>Data</th><th>Usuário</th><th>Cartão</th><th>Descrição</th><th>Valor</th></tr></thead>
+      <tbody id="listaCartoes"></tbody>
+    </table>
+  </div>
 
+  <div id="guardados" class="box" style="display:none">
+    <h2>Valores Guardados</h2>
+    <select id="guardadoUsuario">
+      <option>Casal</option><option>Luã</option><option>Mayara</option>
+    </select>
+    <input id="guardadoConta" placeholder="Conta / Meta">
+    <input id="guardadoValor" type="number" placeholder="Valor">
+    <input id="guardadoData" type="date">
+    <input id="guardadoObs" placeholder="Observação">
+    <button class="btn" onclick="salvarGuardado()">Salvar valor</button>
+
+    <table>
+      <thead><tr><th>Data</th><th>Usuário</th><th>Conta</th><th>Valor</th></tr></thead>
+      <tbody id="listaGuardados"></tbody>
+    </table>
+  </div>
 </div>
 
 <script>
+const db = window.supabase.createClient(
+  "https://pmgkatswiqmvecdovysx.supabase.co",
+  "sb_publishable_hy0h_dWAzVJQ9vjMA0mhPA_4Wr1_pDB"
+);
 
-const supabase = supabase.createClient(
-'https://pmgkatswiqmvecdovysx.supabase.co',
-'sb_publishable_hy0h_dWAzVJQ9vjMA0mhPA_4Wr1_pDB'
-)
+let usuario = "Luã";
 
-let usuario = "Luã"
+function hoje(){
+  return new Date().toISOString().slice(0,10);
+}
+
+document.getElementById("gastoData").value = hoje();
+document.getElementById("cartaoData").value = hoje();
+document.getElementById("guardadoData").value = hoje();
 
 function setUser(nome){
-  usuario = nome
-  document.getElementById("btnLua").classList.remove("active")
-  document.getElementById("btnMayara").classList.remove("active")
-
-  if(nome==="Luã"){
-    document.getElementById("btnLua").classList.add("active")
-  } else {
-    document.getElementById("btnMayara").classList.add("active")
-  }
+  usuario = nome;
+  document.getElementById("btnLua").classList.toggle("active", nome === "Luã");
+  document.getElementById("btnMayara").classList.toggle("active", nome === "Mayara");
 }
 
 async function login(){
-  const senha = document.getElementById("senha").value
+  const senha = document.getElementById("senha").value;
 
-  const { data } = await supabase
-  .from("usuarios")
-  .select("*")
-  .eq("nome", usuario)
-  .eq("senha", senha)
+  const { data, error } = await db
+    .from("usuarios")
+    .select("*")
+    .eq("nome", usuario)
+    .eq("senha", senha)
+    .maybeSingle();
 
-  if(data.length){
-    document.getElementById("loginPage").style.display="none"
-    document.getElementById("app").style.display="block"
-    carregar()
-  } else {
-    alert("Senha incorreta")
+  if(error || !data){
+    alert("Usuário ou senha inválidos.");
+    return;
   }
+
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  document.getElementById("usuarioAtual").innerText = usuario;
+  document.getElementById("gastoUsuario").value = usuario;
+  document.getElementById("cartaoUsuario").value = usuario;
+
+  carregarTudo();
 }
 
-async function salvar(){
-  const desc = document.getElementById("desc").value
-  const valor = document.getElementById("valor").value
-
-  await supabase.from("gastos").insert({
-    usuario,
-    descricao:desc,
-    valor,
-    data:new Date()
-  })
-
-  carregar()
+function sair(){
+  location.reload();
 }
 
-async function carregar(){
-  const { data } = await supabase.from("gastos").select("*")
-
-  const lista = document.getElementById("lista")
-  lista.innerHTML=""
-
-  data.forEach(g=>{
-    lista.innerHTML+=`<li>${g.descricao} - R$ ${g.valor}</li>`
-  })
+function mostrar(id){
+  ["gastos","cartoes","guardados"].forEach(x=>{
+    document.getElementById(x).style.display = x === id ? "block" : "none";
+  });
 }
 
+async function salvarGasto(){
+  const payload = {
+    usuario: document.getElementById("gastoUsuario").value,
+    descricao: document.getElementById("gastoDescricao").value,
+    categoria: document.getElementById("gastoCategoria").value,
+    tipo: document.getElementById("gastoTipo").value,
+    valor: Number(document.getElementById("gastoValor").value),
+    data: document.getElementById("gastoData").value
+  };
+
+  if(!payload.descricao || !payload.valor){
+    alert("Preencha descrição e valor.");
+    return;
+  }
+
+  const { error } = await db.from("gastos").insert(payload);
+  if(error){ alert(error.message); return; }
+
+  document.getElementById("gastoDescricao").value = "";
+  document.getElementById("gastoValor").value = "";
+  carregarTudo();
+}
+
+async function salvarCartao(){
+  const payload = {
+    usuario: document.getElementById("cartaoUsuario").value,
+    nome_cartao: document.getElementById("cartaoNome").value,
+    descricao: document.getElementById("cartaoDescricao").value,
+    categoria: document.getElementById("cartaoCategoria").value,
+    valor: Number(document.getElementById("cartaoValor").value),
+    data: document.getElementById("cartaoData").value,
+    parcelas: 1
+  };
+
+  if(!payload.nome_cartao || !payload.descricao || !payload.valor){
+    alert("Preencha cartão, descrição e valor.");
+    return;
+  }
+
+  const { error } = await db.from("cartoes").insert(payload);
+  if(error){ alert(error.message); return; }
+
+  document.getElementById("cartaoDescricao").value = "";
+  document.getElementById("cartaoValor").value = "";
+  carregarTudo();
+}
+
+async function salvarGuardado(){
+  const payload = {
+    usuario: document.getElementById("guardadoUsuario").value,
+    conta: document.getElementById("guardadoConta").value,
+    valor: Number(document.getElementById("guardadoValor").value),
+    data: document.getElementById("guardadoData").value,
+    observacao: document.getElementById("guardadoObs").value
+  };
+
+  if(!payload.conta || !payload.valor){
+    alert("Preencha conta/meta e valor.");
+    return;
+  }
+
+  const { error } = await db.from("guardados").insert(payload);
+  if(error){ alert(error.message); return; }
+
+  document.getElementById("guardadoValor").value = "";
+  document.getElementById("guardadoObs").value = "";
+  carregarTudo();
+}
+
+async function carregarTudo(){
+  const gastos = await db.from("gastos").select("*").order("data", {ascending:false});
+  const cartoes = await db.from("cartoes").select("*").order("data", {ascending:false});
+  const guardados = await db.from("guardados").select("*").order("data", {ascending:false});
+
+  document.getElementById("listaGastos").innerHTML = (gastos.data || []).map(g=>`
+    <tr><td>${g.data}</td><td>${g.usuario}</td><td>${g.descricao}</td><td>${g.categoria}</td><td>R$ ${Number(g.valor).toFixed(2)}</td></tr>
+  `).join("");
+
+  document.getElementById("listaCartoes").innerHTML = (cartoes.data || []).map(c=>`
+    <tr><td>${c.data}</td><td>${c.usuario}</td><td>${c.nome_cartao}</td><td>${c.descricao}</td><td>R$ ${Number(c.valor).toFixed(2)}</td></tr>
+  `).join("");
+
+  document.getElementById("listaGuardados").innerHTML = (guardados.data || []).map(g=>`
+    <tr><td>${g.data}</td><td>${g.usuario}</td><td>${g.conta}</td><td>R$ ${Number(g.valor).toFixed(2)}</td></tr>
+  `).join("");
+}
 </script>
 
 </body>
